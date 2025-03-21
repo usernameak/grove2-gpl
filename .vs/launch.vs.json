@@ -1,0 +1,43 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "ged.exe (dist\\ged.exe)",
+      "name": "ged.exe (dist\\ged.exe)",
+      "args": [
+        "+enginedata",
+        "${workspaceRoot}/enginedata",
+        "+editordata",
+        "${workspaceRoot}/editordata"
+      ],
+      "env": {
+        "SHIM_MCCOMPAT": "0x800000001"
+      }
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "gpkpack.exe (dist\\gpkpack.exe)",
+      "name": "gpkpack.exe (dist\\gpkpack.exe)",
+      "args": [
+        "-pack",
+        "\"D:\\src\\ToP\\Kraken-Online-Client\\client files\\gamedata_new\""
+      ]
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "krakenRender.exe (dist\\krakenRender.exe)",
+      "name": "krakenRender.exe (dist\\krakenRender.exe)",
+      "args": [
+        "+enginedata",
+        "${workspaceRoot}/enginedata",
+        "+gamedata",
+        "\"D:\\src\\ToP\\KrakenData2\""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+UI:
+- replace the old rich text mechanism
+  (this was a terrible piece of code written
+  in a hurry just to satisfy the bare minimum requirements)
+- input action maps, for keys, shortcuts, menu items and other kinds of inputs
+- UI widget serialization and cloning, in order to implement a proper UI editor
+
+Editor:
+- image editor
+- for UI - UI action map editor

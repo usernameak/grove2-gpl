@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="grUiGSSStyleSheet::RuleTreeNode">
+        <Expand>
+            <Item Name="rules" IncludeView="content">rules</Item>
+
+            <Item Name="subnodeType" IncludeView="content">subnodeType</Item>
+            <Item Name="subnodeCombinator" IncludeView="content">subnodeCombinator</Item>
+            <Item Name="subnodes" IncludeView="content">subnodes</Item>
+
+            <LinkedListItems ExcludeView="content">
+                <HeadPointer>this</HeadPointer>
+                <NextPointer>pNext</NextPointer>
+                <ValueNode>this,view(content)</ValueNode>
+            </LinkedListItems>
+        </Expand>
+    </Type>
+    <Type Name="grUiGSSSelectors::Specificity">
+        <DisplayString>{{ {(uint32_t)idSpecificity}, {(uint32_t)classSpecificity}, {(uint32_t)elementSpecificity} }}</DisplayString>
+    </Type>
+</AutoVisualizer>

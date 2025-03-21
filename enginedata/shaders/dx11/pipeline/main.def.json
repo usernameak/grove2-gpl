@@ -1,0 +1,87 @@
+{
+    "Pipelines": {
+        "UI": {
+            "VertexShader": "/shaders/dx11/pipeline/ui.vp.hlsl",
+            "PixelShader": "/shaders/dx11/pipeline/ui.fp.hlsl",
+            "BlendModes": [
+                "Translucent"
+            ],
+            "DepthTest": false,
+            "ScissorTest": true,
+            "VertexAttributes": {
+                "POSITION": {
+                    "required": true
+                },
+                "TEXCOORD": {
+                    "required": true
+                },
+                "COLOR": {
+                    "required": true
+                }
+            }
+        },
+        "FlatShaded_Default": {
+            "VertexShader": "/shaders/dx11/pipeline/world_base.vp.hlsl",
+            "PixelShader": "/shaders/dx11/pipeline/world_base_flatshaded.fp.hlsl",
+            "BlendModes": [
+                "Normal",
+                "Translucent"
+            ],
+            "Keywords": [
+                "ALPHA_TEST"
+            ],
+            "VertexAttributes": {
+                "POSITION": {
+                    "required": true
+                },
+                "TEXCOORD": {},
+                "COLOR": {},
+                "INSTANCE_TRANSFORM": {
+                    "required": true
+                }
+            }
+        },
+        "Lambert_Default": {
+            "VertexShader": "/shaders/dx11/pipeline/world_base.vp.hlsl",
+            "PixelShader": "/shaders/dx11/pipeline/world_base_lambert.fp.hlsl",
+            "BlendModes": [
+                "Normal",
+                "Translucent"
+            ],
+            "Keywords": [
+                "ALPHA_TEST"
+            ],
+            "VertexAttributes": {
+                "POSITION": {
+                    "required": true
+                },
+                "TEXCOORD": {},
+                "NORMAL": {
+                    "required": true
+                },
+                "TANGENT" : {},
+                "COLOR": {},
+                "INSTANCE_TRANSFORM": {
+                    "required": true
+                }
+            }
+        },
+        "Shadowmap_Default": {
+            "VertexShader": "/shaders/dx11/pipeline/world_base.vp.hlsl",
+            "CullMode": "None",
+            "Keywords": [ "ALPHA_TEST" ],
+            "VertexAttributes": {
+                "POSITION": {
+                    "required": true
+                },
+                "TEXCOORD": {},
+                "NORMAL": {},
+                "TANGENT" : {},
+                "COLOR": {},
+                "INSTANCE_TRANSFORM": {
+                    "required": true
+                }
+            }
+        }
+    }
+}

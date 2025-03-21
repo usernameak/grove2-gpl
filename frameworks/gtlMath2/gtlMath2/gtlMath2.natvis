@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+    <Type Name="gtlMath2::Vector2&lt;*&gt;">
+        <DisplayString>[{x,g}, {y,g}]</DisplayString>
+        <Expand HideRawView="1">
+            <Item Name="x">x,g</Item>
+            <Item Name="y">y,g</Item>
+        </Expand>
+    </Type>
+    <Type Name="gtlMath2::Vector3&lt;*&gt;">
+        <DisplayString>[{x,g}, {y,g}, {z,g}]</DisplayString>
+        <Expand HideRawView="1">
+            <Item Name="x">x,g</Item>
+            <Item Name="y">y,g</Item>
+            <Item Name="z">z,g</Item>
+        </Expand>
+    </Type>
+    <Type Name="gtlMath2::Vector4&lt;*&gt;">
+        <DisplayString>[{x,g}, {y,g}, {z,g}, {w,g}]</DisplayString>
+        <Expand HideRawView="1">
+            <Item Name="x">x,g</Item>
+            <Item Name="y">y,g</Item>
+            <Item Name="z">z,g</Item>
+            <Item Name="w">w,g</Item>
+        </Expand>
+    </Type>
+</AutoVisualizer>

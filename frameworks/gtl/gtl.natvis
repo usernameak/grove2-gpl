@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+	<Type Name="gtl::BaseString&lt;wchar_t&gt;">
+		<DisplayString>{m_peer->strdata,[m_peer->length]su}</DisplayString>
+		<StringView>m_peer->strdata,[m_peer->length]su</StringView>
+		<Expand>
+			<Item Name="[size]" ExcludeView="simple">size()</Item>
+			<Item Name="[capacity]" ExcludeView="simple">capacity()</Item>
+			<ArrayItems>
+				<Size>m_peer->length</Size>
+				<ValuePointer>m_peer->strdata</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="gtl::BaseString&lt;char&gt;">
+		<Intrinsic Name="size" Expression="m_peer->length" />
+		<Intrinsic Name="capacity" Expression="m_peer->capacity" />
+		<DisplayString>{m_peer->strdata,[m_peer->length]s}</DisplayString>
+		<StringView>m_peer->strdata,[m_peer->length]s</StringView>
+		<Expand>
+			<Item Name="[size]" ExcludeView="simple">size()</Item>
+			<Item Name="[capacity]" ExcludeView="simple">capacity()</Item>
+			<ArrayItems>
+				<Size>m_peer->length</Size>
+				<ValuePointer>m_peer->strdata</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="gtl::BasePooledString&lt;wchar_t&gt;">
+		<Intrinsic Name="size" Expression="m_handle->length" />
+		<DisplayString>{m_handle->strdata,[m_handle->length]su}</DisplayString>
+		<StringView>m_handle->strdata,[m_handle->length]su</StringView>
+		<Expand>
+			<Item Name="[size]" ExcludeView="simple">size()</Item>
+			<ArrayItems>
+				<Size>m_handle->length</Size>
+				<ValuePointer>m_handle->strdata</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="gtl::BasePooledString&lt;char&gt;">
+		<Intrinsic Name="size" Expression="m_handle->length" />
+		<DisplayString>{m_handle->strdata,[m_handle->length]s}</DisplayString>
+		<StringView>m_handle->strdata,[m_handle->length]s</StringView>
+		<Expand>
+			<Item Name="[size]" ExcludeView="simple">size()</Item>
+			<ArrayItems>
+				<Size>m_handle->length</Size>
+				<ValuePointer>m_handle->strdata</ValuePointer>
+			</ArrayItems>
+		</Expand>
+	</Type>
+	<Type Name="gnaPointer&lt;*&gt;">
+		<SmartPointer Usage="Minimal">m_ptr</SmartPointer>
+		<DisplayString Condition="m_ptr == 0">empty</DisplayString>
+		<DisplayString Condition="m_ptr != 0">{m_ptr}</DisplayString>
+	</Type>
+	<Type Name="gnaWeakPointer&lt;*&gt;">
+		<SmartPointer Usage="Minimal">m_ptr</SmartPointer>
+		<DisplayString Condition="m_ptr == 0">empty</DisplayString>
+		<DisplayString Condition="m_ptr != 0">{m_ptr}</DisplayString>
+	</Type>
+</AutoVisualizer>

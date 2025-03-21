@@ -1,0 +1,3 @@
+#pragma once
+
+#cmakedefine GR_GIT_REVISION "@GR_GIT_REVISION@"

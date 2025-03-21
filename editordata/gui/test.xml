@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<WidgetLayout>
+	<WidgetLayout x="0" y="0" width="256" height="96">
+		<Background sprite="/textures/ui/test/character_bar.png" />
+	</WidgetLayout>
+</WidgetLayout>

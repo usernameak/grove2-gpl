@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bindings xmlns="urn:x-grove2xml:bindings.xsd" dll="grBinding.dll" module="gtl">
+    <include path="gtlObject/Object.h" />
+    <include path="gtlObject/Cloneable.h" />
+    <include path="nxfIO/FileInputStream.h" />
+    <include path="nxfResource/FlatFileResourceManager.h" />
+    <include path="nxfResource/Asset/AssetManager.h" />
+    <include path="nxfResource/RMEx/ExtendedResourceManager.h" />
+    <include path="nxfResource/Archive/GPKArchive.h" />
+    
+    <class name="gtlRcObject" manuallyDefined="true" />
+    <class name="gtlCloneable" base="gtlRcObject" virtual="true" abstract="true" />
+    <class name="gtlObject" base="gtlCloneable" virtual="true" abstract="true" />
+    
+    <struct name="grDimension" manuallyDefined="true" />
+    <struct name="grRectangle" manuallyDefined="true" />
+    <struct name="grInsets" manuallyDefined="true" />
+    <struct name="grPoint" manuallyDefined="true" />
+    <struct name="grUiUnitInsets" manuallyDefined="true" />
+    <struct name="grColor" manuallyDefined="true" />
+
+    <class name="nxfInputStream" virtual="true" abstract="true" noinherit="true">
+        <constructor />
+    </class>
+
+    <class name="nxfFileInputStream" base="nxfInputStream" virtual="true" noinherit="true">
+        <constructor />
+
+        <method name="open">
+            <arg name="filename" type="gtl::String" />
+            <return type="gnaStatus" />
+        </method>
+    </class>
+
+    <class name="nxfAssetManager" singleton="true">
+        <constructor />
+
+        <method name="dropCaches" />
+        <method name="loadOrGetAsset">
+            <arg name="filename" type="gtl::PooledString" />
+            <arg name="objectType" type="RuntimeType" />
+            <arg name="obj" type="gtlObject" reftype="outstrong" />
+            <arg name="loadFlags" type="uint32_t" default="0" />
+            <return type="gnaStatus" />
+        </method>
+    </class>
+
+    <class name="nxfResourceManager" virtual="true" abstract="true" noinherit="true">
+        <constructor />
+
+        <method name="initializeIndex" virtual="true" abstract="true">
+            <arg name="reinitialize" type="bool" default="false" />
+        </method>
+
+        <method name="getGlobalResourceManager" static="true">
+            <return type="nxfResourceManager" reftype="rawptr" />
+        </method>
+        <method name="setGlobalResourceManager" static="true">
+            <arg name="rm" type="nxfResourceManager" reftype="rawptr" />
+        </method>
+    </class>
+    <class name="nxfFlatFileResourceManager" base="nxfMutableResourceManager" virtual="true" noinherit="true">
+        <constructor>
+            <arg name="resourceDirectory" type="gtl::String" />
+        </constructor>
+
+        <method name="initializeIndex" virtual="true" abstract="true">
+            <arg name="reinitialize" type="bool" default="false" />
+        </method>
+    </class>
+    <class name="nxfMutableResourceManager" base="nxfResourceManager" virtual="true" abstract="true" noinherit="true">
+        <constructor />
+    </class>
+    <namespace name="nxfResource">
+        <class name="ExtendedResourceManager" base="nxfMutableResourceManager" virtual="true" noinherit="true">
+            <enum name="OrderNamespace">
+                <enumvalue name="NS_ENGINE" value="0" />
+                <enumvalue name="NS_EDITOR" value="1" />
+                <enumvalue name="NS_GAME" value="2" />
+                <enumvalue name="NS_MAX" value="3" />
+            </enum>
+
+            <constructor />
+
+            <method name="initializeIndex" virtual="true" abstract="true">
+                <arg name="reinitialize" type="bool" default="false" />
+            </method>
+
+            <method name="addArchiveToNamespace">
+                <arg name="ns" type="nxfResource::ExtendedResourceManager::OrderNamespace" />
+                <arg name="arch" type="nxfResourceManager" reftype="rawptr" />
+            </method>
+            <method name="clearNamespace">
+                <arg name="ns" type="nxfResource::ExtendedResourceManager::OrderNamespace" />
+            </method>
+        </class>
+        <class name="GPKArchive" base="nxfResourceManager" virtual="true" noinherit="true">
+            <constructor>
+                <arg name="stream" type="nxfInputStream" reftype="strong" />
+            </constructor>
+
+            <method name="initializeIndex" virtual="true" abstract="true">
+                <arg name="reinitialize" type="bool" default="false" />
+            </method>
+        </class>
+    </namespace>
+
+    <namespace name="gtl">
+        <stringtype name="String" wide="true" />
+        <stringtype name="PooledString" wide="true" />
+        <stringtype name="PooledAString" />
+    </namespace>
+</bindings>

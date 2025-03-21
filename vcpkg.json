@@ -1,0 +1,8 @@
+{
+  "name": "grove2",
+  "version-string": "2.0.1",
+  "dependencies": [
+    "icu-grove2",
+    "lz4"
+  ]
+}

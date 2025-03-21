@@ -1,0 +1,7 @@
+function(gbuild_StaticExportAll _target)
+	if(MSVC)
+		target_link_options(${_target} INTERFACE /WHOLEARCHIVE:$<TARGET_FILE:${_target}>) 
+	else()
+		target_link_libraries(${_target} INTERFACE -Wl,--whole-archive $<TARGET_FILE:${_target}> -Wl,--no-whole-archive) 
+	endif()
+endfunction()

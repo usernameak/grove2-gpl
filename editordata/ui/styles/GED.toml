@@ -1,0 +1,63 @@
+[[Classes.TextField]]
+background = { type = "Background", color = 0xff1e1e1d }
+border = { type = "Border", color = 0xfffeffc4, thickness = 1 }
+textColor = 0xFFFFFFFF
+padding = { all = 5 }
+
+[[Classes.WidgetTextValue]]
+background = { type = "Background", color = 0xff1e1e1d }
+border = { type = "Border", color = 0xff404040, thickness = 1 }
+textColor = 0xFFFFFFFF
+padding = { all = 5 }
+textAlignment = "left,middle"
+
+[[Classes.DropDownMenuEntry]]
+textColor = 0xFFFFFFFF
+
+background.type = "Background"
+background.color = 0
+
+[[Classes.DropDownMenuEntry]]
+onHovered = true
+
+background.type = "Background"
+background.color = 0x80E1475E
+
+[[Classes.DropDownMenuEntry]]
+onFocused = true
+
+background.type = "Background"
+background.color = 0x80F1B25E
+
+
+[[Classes.Button]]
+border = { type = "Border", color = 0xff555859, thickness = 3 }
+background = { type = "Background", color = 0xff4c5052 }
+textColor = 0xFFFFFFFF
+padding = { all = 5 }
+
+[[Classes.Button]]
+onPressed = true
+
+border = { type = "Border", color = 0xff436a90, thickness = 3 }
+
+[[Classes.Button]]
+onDisabled = true
+
+background = { type = "Background", color = 0 }
+
+[[Classes.GED_Outliner]]
+border = { type = "Border", color = 0xFF3F3F46, thickness = 1 }
+background = { type = "Background", color = 0xFF252526 }
+
+[[Classes.GED_PropertyListInner]]
+padding = { all = 8 }
+
+[[Classes.GED_PropertyTitle]]
+textAlignment = "left,middle"
+
+[[Classes.GED_SubPropertyTitle]]
+textAlignment = "left,middle"
+font.family = "Default"
+font.size = 10.0
+

@@ -1,0 +1,70 @@
+grUiWidgetTextField, .WidgetTextValue {
+    background-color: #1e1e1d;
+    border-style: solid;
+    border-width: 1px;
+    color: white;
+    padding: 5px;
+}
+
+grUiWidgetTextField {
+    border-color: #feffc4;
+}
+
+.WidgetTextValue {
+    text-align: center;
+    border-color: #404040;
+}
+
+grUiDropDownMenuEntry {
+    color: white;
+    background-color: transparent;
+}
+
+grUiDropDownMenuEntry:hover {
+    color: white;
+    background-color: #E1475E80;
+}
+
+grUiDropDownMenuEntry:focus {
+    color: white;
+    background-color: #F1B25E80;
+}
+
+grUiWidgetButton {
+    border-style: solid;
+    border-color: #555859;
+    border-width: 3px;
+    background-color: #4c5052;
+    color: white;
+    padding: 5dp;
+}
+
+grUiWidgetButton:active {
+    border-color: #436a90;
+}
+
+grUiWidgetButton:disabled {
+    background-color: transparent;
+}
+
+ged__SceneEditor__SceneEditorOutliner {
+    border-style: solid;
+    border-color: #3F3F46;
+    border-width: 1px;
+    background-color: #252526;
+}
+
+.GED_PropertyListInner {
+    padding: 8dp;
+}
+
+.GED_PropertyTitle {
+    text-align: left;
+    vertical-align: middle;
+}
+
+.GED_SubPropertyTitle {
+    text-align: left;
+    vertical-align: middle;
+    font-size: 10dp;
+}

@@ -1,0 +1,20 @@
+GroveEngine 2:
+    Copyright © 2020-2025 Anton Korzhuk
+    Copyright © 2022-2023 alexcher_im
+
+ICU4C 71:
+    Copyright © 1991-2022 Unicode, Inc. All rights reserved.
+
+nlohmann/json:
+    Copyright (c) 2013-2022 Niels Lohmann
+
+ordered-map 1.1.0:
+    Copyright (c) 2017 Thibaut Goetghebuer-Planchon <tessil@gmx.com>
+
+miniz 2.2.0:
+    Copyright 2013-2014 RAD Game Tools and Valve Software
+    Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC
+
+tcpp:
+    Copyright (c) 2018-2019 Ildar Kasimov
+        ...with modifications by Anton Korzhuk (2022)

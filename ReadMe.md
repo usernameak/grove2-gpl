@@ -3,6 +3,8 @@ The predecessor to [Winterkit](https://micodev.net/winterkit). **This repository
 
 The project in this repository is licensed under **GNU General Public License, Version 3.0**. If you need a different license, contact me at `deltacxxw at gmail dot com`.
 
+**Repository history was squashed into a single commit for licensing reasons.**
+
 Contains a lot of stuff, but the main point of interest (and the most mature part of this project) is the **UI framework**.
 
 ## Screenshots

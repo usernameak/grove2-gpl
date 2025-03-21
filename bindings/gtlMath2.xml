@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bindings xmlns="urn:x-grove2xml:bindings.xsd" dll="grBindingMath2.dll" module="gtlMath2">
+    <namespace name="gtlMath2">
+        <struct name="Vector3f" manuallyDefined="true" />
+        <struct name="Vector2f" manuallyDefined="true" />
+        <struct name="Matrix3x2f" manuallyDefined="true" />
+    </namespace>
+</bindings>

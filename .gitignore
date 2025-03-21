@@ -1,0 +1,8 @@
+/.vs/*
+/out
+!/.vs/launch.vs.json
+/cmake-build-*/
+/.idea
+.DS_Store
+/dist_packages
+

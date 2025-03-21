@@ -1,0 +1,26 @@
+{
+  "strategy": "additive",
+  "localeFilter": {
+    "filterType": "language",
+    "includelist": [
+      "root",
+      "en",
+      "ru"
+    ]
+  },
+  "featureFilters": {
+    "brkitr_rules": "include",
+    "brkitr_tree": "include",
+    "conversion_mappings": {
+      "includelist": [
+        "ibm-5346_P100-1998",
+        "ibm-5347_P100-1998",
+        "ibm-5348_P100-1997"
+      ]
+    },
+    "cnvalias": "include",
+    "rbnf_tree": "include",
+    "ulayout": "include",
+    "uemoji": "include"
+  }
+}

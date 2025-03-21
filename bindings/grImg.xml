@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bindings xmlns="urn:x-grove2xml:bindings.xsd" dll="grBindingImg.dll" module="grImg" needsmoduleloader="true">
+    <include path="grImg/ImgModule.h" />
+    <include path="grImg/Image.h" />
+    <namespace name="grImg">
+        <enum name="ImageFormat" type="uint16_t">
+            <enumvalue name="IMGFMT_NONE" value="0" />
+
+            <enumvalue name="IMGFMT_ARGB8" value="1" />
+            <enumvalue name="IMGFMT_D24S8" value="2" />
+            <enumvalue name="IMGFMT_D32" value="3" />
+            <enumvalue name="IMGFMT_DXT1" value="4" />
+            <enumvalue name="IMGFMT_DXT3" value="5" />
+            <enumvalue name="IMGFMT_DXT5" value="6" />
+            <enumvalue name="IMGFMT_R32F" value="7" />
+            <enumvalue name="IMGFMT_XRGB8" value="8" />
+
+            <enumvalue name="IMGFMT_ARGB8_SRGB" value="9" />
+            <enumvalue name="IMGFMT_DXT1_SRGB" value="10" />
+            <enumvalue name="IMGFMT_DXT3_SRGB" value="11" />
+            <enumvalue name="IMGFMT_DXT5_SRGB" value="12" />
+
+            <enumvalue name="IMGFMT_MAX_VALID_RAM_TYPE" value="256" />
+
+            <enumvalue name="IMGFMT_BACKBUFFER" value="4096" />
+            <enumvalue name="IMGFMT_EXTERNAL" value="4097" />
+        </enum>
+        <class name="Image" base="gtlObject" virtual="true">
+            <class name="RendererData" virtual="true" abstract="true">
+                <constructor />
+
+                <method name="resize" virtual="true" abstract="true">
+                    <arg name="width" type="uint32_t" />
+                    <arg name="height" type="uint32_t" />
+                </method>
+            </class>
+
+            <enum name="ImageType" type="uint8_t">
+                <enumvalue name="TYPE_BITMAP" value="0" />
+                <enumvalue name="TYPE_RENDERTARGET" value="1" />
+                <enumvalue name="TYPE_SURFACE" value="2" />
+                <enumvalue name="TYPE_SPECIAL_VRAM" value="3" />
+            </enum>
+
+            <enum name="SamplingMode" type="uint8_t">
+                <enumvalue name="SAMP_POINT" value="0" />
+                <enumvalue name="SAMP_LINEAR" value="1" />
+            </enum>
+
+            <field name="m_samplingMode" type="grImg::Image::SamplingMode" />
+
+            <constructor />
+
+            <method name="get_width" const="true">
+                <return type="uint32_t" />
+            </method>
+            <method name="get_height" const="true">
+                <return type="uint32_t" />
+            </method>
+            <method name="get_size" const="true">
+                <return type="grDimension" />
+            </method>
+            <method name="get_type" const="true">
+                <return type="grImg::Image::ImageType" />
+            </method>
+            <method name="get_bitmapData" const="true">
+                <arg name="mipLevel" type="int" default="0" />
+                <return type="CIntPtr" />
+            </method>
+            <method name="get_format" const="true">
+                <return type="grImg::ImageFormat" />
+            </method>
+            <method name="get_numMipMaps" const="true">
+                <return type="int" />
+            </method>
+            <method name="get_implementationData" const="true">
+                <return type="IntPtr" />
+            </method>
+
+            <method name="loadBitmapDataSlow">
+                <arg name="width" type="uint32_t" />
+                <arg name="height" type="uint32_t" />
+                <arg name="fmt" type="grImg::ImageFormat" />
+                <arg name="bitmapData" type="CIntPtr" />
+                <arg name="bitmapDataSize" type="size_t" />
+                <arg name="numMipMaps" type="int" default="1" />
+            </method>
+            <method name="loadSurface">
+                <arg name="width" type="uint32_t" />
+                <arg name="height" type="uint32_t" />
+                <arg name="fmt" type="grImg::ImageFormat" />
+                <arg name="externalSurface" type="IntPtr" />
+            </method>
+            <method name="loadImplementationData">
+                <arg name="width" type="uint32_t" />
+                <arg name="height" type="uint32_t" />
+                <arg name="fmt" type="grImg::ImageFormat" />
+                <arg name="externalSurface" type="IntPtr" />
+                <arg name="numMipMaps" type="int" default="1" />
+            </method>
+            
+            <method name="resize">
+                <arg name="width" type="uint32_t" />
+                <arg name="height" type="uint32_t" />
+            </method>
+
+            <method name="calculateMipWidth" const="true">
+                <arg name="mipLevel" type="int" />
+                <return type="uint32_t" />
+            </method>
+            <method name="calculateMipHeight" const="true">
+                <arg name="mipLevel" type="int" />
+                <return type="uint32_t" />
+            </method>
+            <method name="calculateByteSize" static="true">
+                <arg name="format" type="grImg::ImageFormat" />
+                <arg name="width" type="uint32_t" />
+                <arg name="height" type="uint32_t" />
+                <arg name="mipLevel" type="int" default="0" />
+
+                <return type="size_t" />
+            </method>
+            <method name="calculateMipByteSize" const="true">
+                <arg name="mipLevel" type="int" />
+                <return type="size_t" />
+            </method>
+            <method name="calculateTotalBitmapSize" const="true">
+                <return type="size_t" />
+            </method>
+            <method name="calculateMipOffset" const="true">
+                <arg name="mipLevel" type="int" />
+                <return type="size_t" />
+            </method>
+            <method name="get_bitmapRowStride" const="true">
+                <arg name="mipLevel" type="int" />
+                <return type="size_t" />
+            </method>
+
+            <field name="m_rendererData" type="grImg::Image::RendererData" reftype="rawptr" />
+        </class>
+    </namespace>
+</bindings>

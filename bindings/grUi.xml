@@ -1,0 +1,1591 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bindings xmlns="urn:x-grove2xml:bindings.xsd" dll="grBindingUi.dll" module="grUi" needsmoduleloader="true">
+    <include path="grUi/GUI_Module.h" />
+    <include path="grUi/Widget/Widget.h" />
+    <include path="grUi/Widget/WidgetLayout.h" />
+    <include path="grUi/Widget/WidgetEmpty.h" />
+    <include path="grUi/Widget/WidgetButton.h" />
+    <include path="grUi/Widget/WidgetTooltip.h" />
+    <include path="grUi/Widget/WidgetScrollPane.h" />
+    <include path="grUi/Widget/WidgetImage.h" />
+    <include path="grUi/Widget/Window/RootWindowManager.h" />
+    <include path="grUi/Widget/Window/Frame.h" />
+    <include path="grUi/Layout/LayoutLinear.h" />
+    <include path="grUi/Layout/LayoutGrid.h" />
+    <include path="grUi/Layout/LayoutOverlay.h" />
+    <include path="grUi/Layout/LayoutAbsolute.h" />
+    <include path="grUi/Style/StyleManager.h" />
+    <include path="grUi/Style/GSS/StyleSheet.h" />
+    <include path="grUi/Native/NativePlatformDevice.h" />
+    <include path="grUi/Widget/Native/NativeFramePlatform.h" />
+    <include path="grUi/Drag/DragContext.h" />
+    <include path="grUi/Drag/DragObject.h" />
+    <include path="grUi/Utils/MultipatchImageCache.h" />
+    <include path="grUi/Text/TextRenderer.h" />
+
+    <struct name="grUiEventChangeTab">
+        <field name="tab_index" type="short" />
+    </struct>
+    <struct name="grUiEventTextInput">
+        <field name="c" type="uint32_t" />
+    </struct>
+    <struct name="grUiEventKeyPress">
+        <field name="keycode" type="grKeycode" />
+        <field name="scancode" type="int" />
+        <field name="mods" type="grKeyMods" />
+        <field name="action" type="grKeyAction" />
+    </struct>
+    <struct name="grUiEventMouseMove">
+        <field name="x" type="int" />
+        <field name="y" type="int" />
+        <field name="dx" type="int" />
+        <field name="dy" type="int" />
+    </struct>
+    <struct name="grUiEventMouseDown">
+        <field name="x" type="int" />
+        <field name="y" type="int" />
+        <field name="button" type="int" />
+        <field name="mods" type="grKeyMods" />
+    </struct>
+    <struct name="grUiEventMouseUp">
+        <field name="x" type="int" />
+        <field name="y" type="int" />
+        <field name="button" type="int" />
+        <field name="mods" type="grKeyMods" />
+    </struct>
+    <struct name="grUiEventMouseWheel">
+        <field name="x" type="int" />
+        <field name="y" type="int" />
+        <field name="delta" type="int" />
+        <field name="mods" type="grKeyMods" />
+    </struct>
+    <struct name="grUiEventMouseEnter" />
+    <struct name="grUiEventMouseLeave" />
+    <struct name="grUiEventFocus" />
+    <struct name="grUiEventDefocus" />
+    <struct name="grUiEventPerformAction" />
+    <struct name="grUiEventObjectDrop" manuallyDefined="true" />
+    
+    <class name="grUiWidget" base="gtlRcObject" virtual="true" abstract="true">
+        <enum name="EnumInsetType">
+            <enumvalue name="INSET_TEXT" value="0" />
+            <enumvalue name="INSET_BASE" value="1" />
+            <enumvalue name="INSET_BORDER" value="2" />
+            <enumvalue name="INSET_MARGIN" value="3" />
+        </enum>
+        <enum name="EnumVisibility">
+            <enumvalue name="VISIBILITY_VISIBLE" value="0" />
+            <enumvalue name="VISIBILITY_INVISIBLE" value="1" />
+            <enumvalue name="VISIBILITY_GONE" value="2" />
+        </enum>
+
+        <constructor />
+
+        <method name="initialMeasure" virtual="true" abstract="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        <method name="get_contentBias" virtual="true">
+            <return type="grUiEnumContentBias" />
+        </method>
+        <method name="get_layoutFlags" virtual="true">
+            <return type="uint32_t" />
+        </method>
+        <method name="measure">
+            <arg name="biasedSize" type="int" default="0" />
+            <return type="grDimension" />
+        </method>
+
+        <method name="update" virtual="true" />
+        <method name="tick" virtual="true">
+            <arg name="deltaTime" type="float" />
+        </method>
+
+        <method name="findNativeWindow" virtual="true">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+
+        <method name="get_windowRenderer">
+            <return type="grUiRenderer" reftype="rawptr" />
+        </method>
+        <!-- thunks for get_nativeFrame and get_nativeDevice omitted -->
+
+        <method name="preDraw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+            <arg type="grRectangle" name="clipRect" reftype="constref" />
+        </method>
+        <method name="drawClipped" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+            <arg type="grRectangle" name="clipRect" reftype="constref" />
+        </method>
+        <method name="draw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+
+        <method name="nativeWidgetDraw" virtual="true" />
+        <method name="nativeWidgetPreDraw" virtual="true">
+            <arg name="deltaTime" type="float" />
+        </method>
+        <method name="nativeWidgetPresent" virtual="true" />
+
+        <method name="drawDebug" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+
+        <method name="get_nativeViewportWidget" virtual="true">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="usesNativeChildEventBehavior" virtual="true">
+            <return type="bool" />
+        </method>
+
+        <method name="get_insets">
+            <arg name="type" type="grUiWidget::EnumInsetType" />
+            <return type="grInsets" />
+        </method>
+        <method name="get_extendedInsets" virtual="true">
+            <arg name="type" type="grUiWidget::EnumInsetType" />
+            <return type="grInsets" />
+        </method>
+        <method name="get_baseInsets">
+            <return type="grInsets" />
+        </method>
+
+        <method name="get_parent">
+            <return type="grUiWidgetLayout" reftype="weak" />
+        </method>
+        <method name="set_parent">
+            <arg name="val" type="grUiWidgetLayout" reftype="weak" />
+            <arg name="pflag" type="uint32_t" default="0" />
+        </method>
+
+        <method name="isRootWidget">
+            <return type="bool" />
+        </method>
+
+        <method name="handleParentChanged" virtual="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+        </method>
+        <method name="updateNativeDevice" virtual="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+        </method>
+
+        <method name="get_layoutDirty" virtual="true">
+            <return type="bool" />
+        </method>
+        <method name="set_layoutDirty">
+            <arg name="val" type="bool" />
+        </method>
+
+        <method name="get_position">
+            <return type="grPoint" />
+        </method>
+        <method name="get_size">
+            <return type="grDimension" />
+        </method>
+
+        <method name="get_layoutData">
+            <return type="gtlRcObject" reftype="strong" />
+        </method>
+        <method name="set_layoutData">
+            <arg name="val" type="gtlRcObject" reftype="strong" />
+        </method>
+
+        <method name="get_border">
+            <return type="grUiBorderBase" reftype="strong" />
+        </method>
+        <method name="set_border">
+            <arg name="val" type="grUiBorderBase" reftype="strong" />
+        </method>
+
+        <method name="get_padding">
+            <return type="grUiUnitInsets" />
+        </method>
+        <method name="set_padding">
+            <arg name="val" type="grUiUnitInsets" />
+        </method>
+
+        <method name="get_minimumSize">
+            <return type="grUiUnitDimension" />
+        </method>
+        <method name="set_minimumSize">
+            <arg name="val" type="grUiUnitDimension" />
+        </method>
+
+        <method name="get_margin">
+            <return type="grUiUnitInsets" />
+        </method>
+        <method name="set_margin">
+            <arg name="val" type="grUiUnitInsets" />
+        </method>
+
+        <method name="get_bounds">
+            <return type="grRectangle" />
+        </method>
+        <method name="set_bounds">
+            <arg name="bounds" type="grRectangle" />
+        </method>
+
+        <method name="set_size">
+            <arg name="size" type="grDimension" />
+        </method>
+
+        <method name="set_position">
+            <arg name="pos" type="grPoint" />
+        </method>
+
+        <method name="get_visibility">
+            <return type="grUiWidget::EnumVisibility" />
+        </method>
+        <method name="set_visibility">
+            <arg name="val" type="grUiWidget::EnumVisibility" />
+        </method>
+
+        <method name="get_focused">
+            <return type="bool" />
+        </method>
+        <method name="get_fullyFocused">
+            <return type="bool" />
+        </method>
+        <method name="set_focused">
+            <arg name="focused" type="bool" />
+            <arg name="suppressEvent" type="bool" default="false" />
+        </method> 
+
+        <method name="get_ignoresMouse">
+            <return type="bool" />
+        </method>
+        <method name="set_ignoresMouse">
+            <arg name="val" type="bool" />
+        </method>
+
+        <method name="get_cursor">
+            <return type="gtl::PooledAString" />
+        </method>
+        <method name="set_cursor">
+            <arg name="cursor" type="gtl::PooledAString" />
+        </method>
+        <method name="get_actualCursor" virtual="true" const="true">
+            <return type="gtl::PooledAString" />
+        </method>
+
+        <method name="hitTest" virtual="true">
+            <arg name="point" type="grPoint" />
+            <return type="bool" />
+        </method>
+        
+        <method name="computeRelativePosition">
+            <arg name="widget" type="grUiWidget" reftype="strong" />
+            <return type="grPoint" />
+        </method>
+        
+        <method name="findByID" virtual="true">
+            <arg name="id" type="gtl::PooledAString" reftype="constref" />
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        
+        <method name="set_id">
+            <arg name="id" type="gtl::PooledAString" />
+        </method>
+        <method name="get_id">
+            <return type="gtl::PooledAString" />
+        </method>
+        
+        <method name="set_styleStateBits">
+            <arg name="styleStateBits" type="uint64_t" />
+        </method>
+        <method name="get_styleStateBits">
+            <return type="uint64_t" />
+        </method>
+        
+        <method name="set_stylingEnabled">
+            <arg name="enabled" type="bool" />
+        </method>
+        <method name="set_styleSheet">
+            <arg name="ns" type="grUiGSSStyleSheet" reftype="strong" />
+        </method>
+        
+        <method name="applyStyleProperty" virtual="true">
+            <arg name="name" type="gtl::PooledAString" reftype="constref" />
+            <arg name="value" type="grUiGSSPropVal" reftype="weak" />
+            <return type="bool" />
+        </method>
+        <method name="updateStyle" />
+        <method name="updateStyleHierarchy" virtual="true" />
+        
+        <method name="add_styleClass">
+            <arg name="name" type="gtl::PooledAString" /> 
+        </method>
+        <method name="remove_styleClass">
+            <arg name="name" type="gtl::PooledAString" />
+        </method>
+        <!--method name="get_styleClasses">
+            <return type="List gtl::PooledAString" />
+        </method-->
+
+        <method name="get_dpiScaleFactor">
+            <return type="int" /> 
+        </method>
+
+        <method name="updateDpiScaleFactor" />
+
+        <method name="updateDpiScaleFactor" access="protected">
+            <arg name="parent" type="grUiWidget" reftype="weak" />
+        </method>
+
+        <method name="get_metricContext">
+            <return type="grUiMetricContext" />
+        </method>
+
+        <method name="nextSibling">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="previousSibling">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+
+        <method name="pack" />
+        <method name="pack">
+            <arg name="minSize" type="grDimension" />
+        </method>
+        <method name="center">
+            <arg name="parent" type="grUiWidget" reftype="weak" />
+        </method>
+
+        <field name="background" type="grUiBackgroundBase" reftype="strong" />
+        <field name="clipToBounds" type="bool" />
+
+        <eventSink name="eventSink_mouseMove" type="grUiEventMouseMove" />
+        <eventSink name="eventSink_mouseDown" type="grUiEventMouseDown" />
+        <eventSink name="eventSink_mouseUp" type="grUiEventMouseUp" />
+        <eventSink name="eventSink_mouseWheel" type="grUiEventMouseWheel" />
+        <eventSink name="eventSink_mouseLeave" type="grUiEventMouseLeave" />
+        <eventSink name="eventSink_mouseEnter" type="grUiEventMouseEnter" />
+
+        <eventSink name="eventSink_focus" type="grUiEventFocus" />
+        <eventSink name="eventSink_defocus" type="grUiEventDefocus" />
+        <eventSink name="eventSink_parentDefocus" type="grUiEventDefocus" />
+
+        <eventSink name="eventSink_keyEvent" type="grUiEventKeyPress" />
+        <eventSink name="eventSink_textInput" type="grUiEventTextInput" />
+
+        <eventSink name="eventSink_objectDrop" type="grUiEventObjectDrop" />
+
+        <method name="set_isRootWidget" access="protected">
+            <arg name="value" type="bool" />
+        </method>
+        <method name="widgetBorderChanged" access="protected" virtual="true" />
+        <method name="set_dpiScaleFactor" access="protected" virtual="true">
+            <arg name="dpi" type="int" />
+        </method>
+        <method name="onLostParent" access="protected" virtual="true" />
+        <method name="onBoundsChanged" access="protected" virtual="true" />
+    </class>
+    
+    <class name="grUiWidgetLayout" base="grUiWidget" virtual="true">
+        <constructor />
+        <constructor>
+            <arg name="layoutManager" type="grUiLayoutManager" reftype="strong" />
+        </constructor>
+        
+        <!-- overridden methods -->
+        <method name="initialMeasure" virtual="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        <method name="get_contentBias" virtual="true">
+            <return type="grUiEnumContentBias" />
+        </method>
+        <method name="get_layoutFlags" virtual="true">
+            <return type="uint32_t" />
+        </method>
+        
+        <!-- declared methods -->
+        <method name="insertAfter">
+            <arg name="child" type="grUiWidget" reftype="strong" />
+            <arg name="after" type="grUiWidget" reftype="weak" />
+            <arg name="pflags" type="uint32_t" default="0" />
+        </method>
+        <method name="insertBefore">
+            <arg name="child" type="grUiWidget" reftype="strong" />
+            <arg name="before" type="grUiWidget" reftype="weak" />
+            <arg name="pflags" type="uint32_t" default="0" />
+        </method>
+        <method name="add">
+            <arg name="child" type="grUiWidget" reftype="strong" />
+            <arg name="pflags" type="uint32_t" default="0" />
+        </method>
+        <method name="add">
+            <arg name="child" type="grUiWidget" reftype="strong" />
+            <arg name="layoutData" type="gtlRcObject" reftype="strong" />
+            <arg name="pflags" type="uint32_t" default="0" />
+        </method>
+        <method name="remove">
+            <arg name="child" type="grUiWidget" reftype="weak" />
+            <arg name="pflags" type="uint32_t" default="0" />
+        </method>
+        <method name="removeAll" />
+        
+        <!-- overridden methods -->
+        <method name="update" virtual="true" />
+        <method name="tick" virtual="true">
+            <arg name="deltaTime" type="float" />
+        </method>
+        
+        <!-- overridden methods -->
+        <method name="drawClipped" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+            <arg type="grRectangle" name="clipRect" reftype="constref" />
+        </method>
+        <method name="draw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+        <method name="preDraw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+            <arg type="grRectangle" name="clipRect" reftype="constref" />
+        </method>
+        <method name="drawDebug" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+        
+        <!-- declared methods -->
+        <method name="needsLayout">
+            <return type="bool" />
+        </method>
+        <method name="markNeedsLayout" />
+        
+        <!-- overridden methods -->
+        <method name="get_layoutDirty" virtual="true">
+            <return type="bool" />
+        </method>
+        
+        <!-- declared methods -->
+        <method name="releaseFocusFromChildren">
+            <arg type="bool" name="suppressEvent" default="false" />
+        </method>
+        
+        <!-- overridden methods -->
+        <method name="findByID" virtual="true">
+            <arg name="id" type="gtl::PooledAString" reftype="constref" />
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="updateStyleHierarchy" virtual="true" />
+        
+        <!-- TODO: proper iterators -->
+        
+        <!-- declared methods -->
+        <method name="firstChild">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="numChildren">
+            <return type="uint32_t" />
+        </method>
+        
+        <!-- overridden methods -->
+        <method name="updateNativeDevice" virtual="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+        </method>
+        
+        <!-- declared methods -->
+        <method name="set_transparentHitTest">
+            <arg type="bool" name="value" />
+        </method>
+        <method name="is_transparentHitTest">
+            <return type="bool" />
+        </method>
+        
+        <!-- overridden methods -->
+        <method name="get_actualCursor" virtual="true" const="true">
+            <return type="gtl::PooledAString" />
+        </method>
+        <method name="hitTest" virtual="true">
+            <arg name="point" type="grPoint" />
+            <return type="bool" />
+        </method>
+        
+        <field name="layout" type="grUiLayoutManager" reftype="strong" />
+        
+        <!-- declared methods -->
+        <method name="forceLayout">
+            <arg type="bool" name="ignoreCheck" default="true" />
+        </method>
+        
+        <!-- overridden methods -->
+        <method name="set_dpiScaleFactor" access="protected" virtual="true">
+            <arg name="dpi" type="int" />
+        </method>
+        <method name="onLostParent" access="protected" virtual="true" />
+        <method name="onBoundsChanged" access="protected" virtual="true" />
+    </class>
+
+    <class name="grUiWidgetScrollPane" base="grUiWidgetLayout" virtual="true">
+        <constructor />
+
+        <enum name="ScrollFlags" mode="flags">
+            <enumvalue name="SCROLL_FLAG_INVERT_OFFSET" value="1" />
+        </enum>
+
+        <method name="set_contentWidget">
+            <arg name="widget" type="grUiWidget" reftype="strong" />
+        </method>
+        <method name="get_contentWidget">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+
+        <method name="set_scrollbarWidget">
+            <arg name="widget" type="grUiWidget" reftype="strong" />
+        </method>
+        <method name="get_scrollbarWidget">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+
+        <method name="set_scrollFlags">
+            <arg name="widget" type="grUiWidgetScrollPane::ScrollFlags" />
+        </method>
+        <method name="get_scrollFlags">
+            <return type="grUiWidgetScrollPane::ScrollFlags" />
+        </method>
+
+        <method name="scrollToTop" />
+        <method name="scrollToEnd" />
+    </class>
+
+    <class name="grUiWidgetImage" base="grUiWidget" virtual="true">
+        <constructor />
+        <constructor>
+            <arg name="sprite" type="grUiSprite" />
+        </constructor>
+
+        <method name="initialMeasure" virtual="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        <method name="draw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+
+        <method name="get_image">
+            <return type="grUiSprite" reftype="constref" />
+        </method>
+        <method name="set_image">
+            <arg type="grUiSprite" name="image" />
+        </method>
+
+        <method name="get_dpiScaleImage">
+            <return type="bool" />
+        </method>
+        <method name="set_dpiScaleImage">
+            <arg type="bool" name="value" />
+        </method>
+
+        <method name="get_imageScale">
+            <return type="float" />
+        </method>
+        <method name="set_imageScale">
+            <arg type="float" name="value" />
+        </method>
+    </class>
+
+    <class name="grUiWidgetTooltip" base="grUiWidgetLayout" virtual="true">
+        <constructor />
+
+        <method name="displayTip">
+            <arg name="windowManager" type="grUiWindowManager" reftype="strong" />
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+        </method>
+        <method name="hideTip" />
+    </class>
+
+    <class name="grUiWidgetEmpty" base="grUiWidget" virtual="true">
+        <constructor />
+        <method name="initialMeasure" virtual="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+    </class>
+    
+    <class name="grUiWidgetText" base="grUiWidget" virtual="true">
+        <constructor />
+        <constructor>
+            <arg name="text" type="gtl::String" />
+        </constructor>
+        <method name="initialMeasure" virtual="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        <method name="get_contentBias" virtual="true">
+            <return type="grUiEnumContentBias" />
+        </method>
+        <method name="draw" virtual="true">
+            <arg type="grUiRenderer" name="render" reftype="rawptr" />
+        </method>
+        <method name="set_text">
+            <arg name="text" type="gtl::String" />
+        </method>
+        <method name="get_text">
+            <return type="gtl::String" />
+        </method>
+        <method name="get_spannedText">
+            <return type="grUiSpannedText" reftype="ref" />
+        </method>
+        <method name="set_maxWidth">
+            <arg name="maxWidth" type="int" />
+        </method>
+        <method name="get_maxWidth">
+            <return type="int" />
+        </method>
+        <method name="set_multiline">
+            <arg name="multiline" type="bool" />
+        </method>
+        <method name="get_multiline">
+            <return type="bool" />
+        </method>
+        <method name="set_ellipsize">
+            <arg name="ellipsize" type="bool" />
+        </method>
+        <method name="get_ellipsize">
+            <return type="bool" />
+        </method>
+        <method name="applyStyleProperty" virtual="true">
+            <arg name="name" type="gtl::PooledAString" reftype="constref" />
+            <arg name="value" type="grUiGSSPropVal" reftype="weak" />
+            <return type="bool" />
+        </method>
+        <field name="color" type="grColor" />
+    </class>
+    <class name="grUiWidgetIconText" base="grUiWidgetText" virtual="true" /> <!-- TODO -->
+    
+    <class name="grUiWidgetButton" base="grUiWidgetIconText" virtual="true">
+        <enum name="State">
+            <enumvalue name="STATE_IDLE" value="0" />
+            <enumvalue name="STATE_HOVERED" value="1" />
+            <enumvalue name="STATE_PRESSED" value="2" />
+        </enum>
+        <constructor />
+        <constructor>
+            <arg name="label" type="gtl::String" />
+        </constructor>
+        <eventSink name="eventSink_performAction" type="grUiEventPerformAction" />
+        <method name="clickButton" />
+        <method name="get_buttonState">
+            <return type="grUiWidgetButton::State" />
+        </method>
+        <method name="set_disabled">
+            <arg name="disabled" type="bool" />
+        </method>
+        <method name="get_disabled">
+            <return type="bool" />
+        </method>
+        <method name="updateVisualsFromState" virtual="true" />
+    </class>
+
+    <class name="grUiFrame" base="grUiWidgetLayout" virtual="true">
+        <constructor/>
+
+        <method name="update" virtual="true" />
+
+        <method name="set_title">
+            <arg name="title" type="gtl::String" />
+        </method>
+        <method name="get_title">
+            <return type="gtl::String" />
+        </method>
+
+        <method name="closeFrame" />
+        <method name="set_contentWidget">
+            <arg name="widget" type="grUiWidget" reftype="strong" />
+        </method>
+        <method name="initialMeasure" virtual="true">
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        <method name="get_contentWidget">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="get_nativeViewportWidget" virtual="true">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="handleParentChanged" virtual="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+        </method>
+
+        <enum name="PopupFlags" type="uint32_t">
+            <enumvalue name="POPF_NOPACK" value="1" />
+            <enumvalue name="POPF_NOCENTER" value="2" />
+        </enum>
+
+        <method name="displayPopup">
+            <arg name="windowManager" type="grUiWidgetLayout" reftype="weak" />
+            <arg name="flags" type="uint32_t" default="0" />
+        </method>
+        <method name="togglePopup">
+            <arg name="windowManager" type="grUiWidgetLayout" reftype="weak" />
+            <arg name="flags" type="uint32_t" default="0" />
+        </method>
+
+        <method name="bringToFront" />
+
+        <method name="set_autoPack">
+            <arg name="autoPack" type="bool" />
+        </method>
+        <method name="get_autoPack">
+            <return type="bool" />
+        </method>
+        
+        <eventSink name="eventSink_windowClose" type="grUiEventPerformAction" />
+        <eventSink name="eventSink_windowOpen" type="grUiEventPerformAction" />
+
+        <method name="widgetBorderChanged" virtual="true" access="protected" />
+        <method name="onLostParent" virtual="true" access="protected" />
+        <method name="onBoundsChanged" virtual="true" access="protected" />
+    </class>
+
+    <class name="grUiWindowManager" base="grUiWidgetLayout" virtual="true">
+        <constructor />
+        <method name="displayCenteredDialog">
+            <arg name="win" type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="displayProportionalDialog">
+            <arg name="win" type="grUiWidget" reftype="weak" />
+            <arg name="x" type="float" />
+            <arg name="y" type="float" />
+        </method>
+    </class>
+
+    <class name="grUiRootWindowManager" base="grUiWindowManager" virtual="true">
+        <constructor>
+            <arg name="device" type="grUiNativePlatformDevice" reftype="rawptr" />
+        </constructor>
+        <method name="startDragAndDrop">
+            <arg name="ctx" type="grUiDragContext" reftype="strong" />
+        </method>
+        <method name="get_dragContext">
+            <return type="grUiDragContext" reftype="weak" />
+        </method>
+        <method name="displayProportionalDialog">
+            <arg name="win" type="grUiWidget" reftype="weak" />
+            <arg name="x" type="float" />
+            <arg name="y" type="float" />
+        </method>
+        <method name="nativeWidgetDraw" virtual="true" />
+        <method name="nativeWidgetPreDraw" virtual="true">
+            <arg name="deltaTime" type="float" />
+        </method>
+        <method name="nativeWidgetPresent" virtual="true" />
+        <method name="usesNativeChildEventBehavior" virtual="true">
+            <return type="bool" />
+        </method>
+        <method name="update" virtual="true" />
+        <method name="endDragAndDrop" />
+        <method name="getRootWindowManager" static="true">
+            <return type="grUiRootWindowManager" reftype="weak" />
+        </method>
+        <method name="setRootWindowManager" static="true">
+            <arg name="wm" type="grUiRootWindowManager" reftype="strong" />
+        </method>
+    </class>
+    
+    <class name="grUiLayoutManager" base="gtlRcObject" virtual="true" abstract="true">
+        <constructor />
+        
+        <method name="initialMeasure" virtual="true" access="protected" abstract="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        
+        <method name="layout" virtual="true" access="protected" abstract="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+        </method>
+        
+        <method name="get_contentBias" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <return type="grUiEnumContentBias" />
+        </method>
+        
+        <method name="get_flags" virtual="true" access="protected">
+            <return type="uint32_t" />
+        </method>
+        
+        <method name="drawDebug" virtual="true" access="protected" />
+        
+        <!-- method name="createLayoutDataFromString" / -->
+    </class>
+
+    <class name="grUiLayoutLinear" base="grUiLayoutManager" virtual="true">
+        <enum name="Axis">
+            <enumvalue name="AXIS_X" value="0" />
+            <enumvalue name="AXIS_Y" value="1" />
+        </enum>
+        <enum name="SizeMode">
+            <enumvalue name="SIZEMODE_MIN" value="0" />
+            <enumvalue name="SIZEMODE_FIXED" value="1" />
+            <enumvalue name="SIZEMODE_GROW" value="2" />
+            <enumvalue name="SIZEMODE_SQUARE" value="3" />
+        </enum>
+        <enum name="SecondaryAlignment">
+            <enumvalue name="SA_FILL" value="0" />
+            <enumvalue name="SA_START" value="1" />
+            <enumvalue name="SA_MIDDLE" value="2" />
+            <enumvalue name="SA_END" value="3" />
+        </enum>
+
+        <class name="ElementSpec" base="gtlRcObject" virtual="true" noinherit="true">
+            <field name="sizeMode" type="grUiLayoutLinear::SizeMode" />
+            <field name="sizeModeParam" type="int" />
+            <field name="minSecondarySize" type="grUiUnitSizeI" />
+            <field name="secondaryAlignment" type="grUiLayoutLinear::SecondaryAlignment" />
+
+            <constructor />
+
+            <method name="createMin" static="true">
+                <arg name="size" type="int" />
+                <arg name="secondaryAlignment" type="grUiLayoutLinear::SecondaryAlignment" />
+                <return type="grUiLayoutLinear::ElementSpec" reftype="strong" />
+            </method>
+
+            <method name="createFixed" static="true">
+                <arg name="size" type="int" />
+                <arg name="secondaryAlignment" type="grUiLayoutLinear::SecondaryAlignment" />
+                <return type="grUiLayoutLinear::ElementSpec" reftype="strong" />
+            </method>
+
+            <method name="createGrow" static="true">
+                <arg name="weight" type="int" />
+                <arg name="secondaryAlignment" type="grUiLayoutLinear::SecondaryAlignment" />
+                <return type="grUiLayoutLinear::ElementSpec" reftype="strong" />
+            </method>
+
+            <method name="createSquare" static="true">
+                <arg name="secondaryAlignment" type="grUiLayoutLinear::SecondaryAlignment" />
+                <return type="grUiLayoutLinear::ElementSpec" reftype="strong" />
+            </method>
+        </class>
+
+        <constructor>
+            <arg name="primaryAxis" type="grUiLayoutLinear::Axis" />
+        </constructor>
+        <constructor>
+            <arg name="primaryAxis" type="grUiLayoutLinear::Axis" />
+            <arg name="gap" type="grUiUnitSizeI" />
+        </constructor>
+
+        <method name="initialMeasure" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        
+        <method name="layout" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+        </method>
+        
+        <method name="get_contentBias" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <return type="grUiEnumContentBias" />
+        </method>
+        
+        <method name="get_flags" virtual="true" access="protected">
+            <return type="uint32_t" />
+        </method>
+    </class>
+
+    <class name="grUiLayoutGrid" base="grUiLayoutManager" virtual="true" noinherit="true">
+        <enum name="SpecialValue" type="int" mode="bare">
+            <enumvalue name="VAL_DEFAULT" value="-1" />
+            <enumvalue name="VAL_END_OF_ROW" value="-2" />
+        </enum>
+        <enum name="SizeMode" type="int">
+            <enumvalue name="SIZE_MIN" value="0" />
+            <enumvalue name="SIZE_FIXED" value="1" />
+        </enum>
+        <enum name="GlobalAlignmentFlags" type="uint32_t" mode="flags">
+            <enumvalue name="GA_LEFT" value="1" />
+            <enumvalue name="GA_RIGHT" value="2" />
+            <enumvalue name="GA_CENTER" value="3" />
+
+            <enumvalue name="GA_TOP" value="4" />
+            <enumvalue name="GA_BOTTOM" value="8" />
+            <enumvalue name="GA_MIDDLE" value="12" />
+        </enum>
+        <class name="ElementSpec" base="gtlRcObject" virtual="true" noinherit="true">
+            <field name="cellX" type="int" />
+            <field name="cellY" type="int" />
+            <field name="spanX" type="int" />
+            <field name="spanY" type="int" />
+
+            <constructor>
+                <arg name="cellX" type="int" />
+                <arg name="cellY" type="int" />
+                <arg name="spanX" type="int" default="1" />
+                <arg name="spanY" type="int" default="1" />
+            </constructor>
+        </class>
+        <struct name="AxisConstraint">
+            <field name="sizeConstraint" type="grUiUnitSizeI" />
+            <field name="sizeMode" type="grUiLayoutGrid::SizeMode" />
+            <field name="growFactor" type="int" />
+            <field name="gapNext" type="grUiUnitSizeI" />
+        </struct>
+
+        <constructor>
+            <arg name="columnConstraints" type="grUiLayoutGrid::AxisConstraint" arraytype="fixed" />
+            <arg name="rowConstraints" type="grUiLayoutGrid::AxisConstraint" arraytype="fixed" />
+            <arg name="columns" type="int" />
+            <arg name="rows" type="int" />
+            <arg name="alignment" type="uint32_t" />
+        </constructor>
+        
+        <method name="initialMeasure" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        
+        <method name="layout" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+        </method>
+    </class>
+    
+    <class name="grUiLayoutAbsolute" base="grUiLayoutManager" virtual="true" noinherit="true">
+        <class name="ElementSpec" base="gtlRcObject" virtual="true" noinherit="true">
+            <field name="m_x" type="grUiUnitSizeI" />
+            <field name="m_y" type="grUiUnitSizeI" />
+            <field name="m_width" type="grUiUnitSizeI" />
+            <field name="m_height" type="grUiUnitSizeI" />
+
+            <constructor>
+                <arg name="x" type="grUiUnitSizeI" />
+                <arg name="y" type="grUiUnitSizeI" />
+                <arg name="width" type="grUiUnitSizeI" />
+                <arg name="height" type="grUiUnitSizeI" />
+            </constructor>
+        </class>
+
+        <constructor>
+            <arg name="width" type="grUiUnitSizeI" />
+            <arg name="height" type="grUiUnitSizeI" />
+        </constructor>
+        
+        <method name="initialMeasure" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        
+        <method name="layout" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+        </method>
+    </class>
+    
+    <class name="grUiLayoutOverlay" base="grUiLayoutManager" virtual="true" noinherit="true">
+        <class name="ElementSpec" base="gtlRcObject" virtual="true" noinherit="true">
+            <field name="relativePositionX" type="float" />
+            <field name="relativePositionY" type="float" />
+            <field name="offsetX" type="grUiUnitSizeI" />
+            <field name="offsetY" type="grUiUnitSizeI" />
+
+            <constructor>
+                <arg name="relativePositionX" type="float" />
+                <arg name="relativePositionY" type="float" />
+                <arg name="offsetX" type="grUiUnitSizeI" />
+                <arg name="offsetY" type="grUiUnitSizeI" />
+            </constructor>
+        </class>
+
+        <constructor />
+        
+        <method name="initialMeasure" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+            <arg name="biasedSize" type="int" />
+            <return type="grDimension" />
+        </method>
+        
+        <method name="layout" virtual="true" access="protected">
+            <arg name="parent" type="grUiWidgetLayout" reftype="rawptr" />
+        </method>
+    </class>
+
+
+    <class name="grUiNativePlatformDevice" virtual="true" abstract="true">
+        <constructor />
+        <method name="createFramePlatform" virtual="true" abstract="true">
+            <arg name="widget" type="grUiWidget" reftype="weak" />
+            <return type="grUiNativeFramePlatform" reftype="rawptr" />
+        </method>
+        <method name="createRenderer" virtual="true" abstract="true">
+            <arg name="widget" type="grUiWidget" reftype="weak" />
+            <return type="grUiRenderer" reftype="rawptr" />
+        </method>
+        <method name="nativeWidgetDraw" virtual="true" abstract="true">
+            <arg name="widget" type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="nativeWidgetPreDraw" virtual="true" abstract="true">
+            <arg name="widget" type="grUiWidget" reftype="weak" />
+            <arg name="deltaTime" type="float" />
+        </method>
+        <method name="isDesktopWidget" virtual="true" abstract="true" const="true">
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+            <return type="bool" />
+        </method>
+        <method name="shouldHaveOwnRenderer" virtual="true" abstract="true" const="true">
+            <arg name="widget" type="grUiWidget" reftype="weak" />
+            <arg name="parent" type="grUiWidgetLayout" reftype="weak" />
+            <return type="bool" />
+        </method>
+        <method name="get_displayBounds" virtual="true" abstract="true" const="true">
+            <return type="grRectangle" />
+        </method>
+        <method name="set_globalMousePointer" virtual="true" abstract="true" const="true">
+            <arg name="pointerID" type="gtl::PooledAString" />
+        </method>
+        <method name="openURI" virtual="true" abstract="true">
+            <arg name="uri" type="gtl::String" reftype="constref" />
+        </method>
+        <method name="get_doubleClickDelayMs" virtual="true" abstract="true" const="true">
+            <return type="uint" />
+        </method>
+        <method name="useNativeWindowManagerInputMechanism" virtual="true" const="true">
+            <return type="bool" />
+        </method>
+    </class>
+
+    <class name="grUiNativeFramePlatform" virtual="true" abstract="true">
+        <field name="m_frame" type="grUiWidget" access="protected" reftype="weak" />
+        <constructor>
+            <arg name="frame" type="grUiWidget" reftype="weak" />
+        </constructor>
+        <method name="set_windowTitle" virtual="true" abstract="true">
+            <arg name="title" type="gtl::String" reftype="constref" />
+        </method>
+        <method name="set_windowVisible" virtual="true" abstract="true">
+            <arg name="value" type="bool" />
+        </method>
+        <method name="get_windowViewport" virtual="true" abstract="true">
+            <return type="grRectangle" />
+        </method>
+        <method name="set_mouseCaptured" virtual="true" abstract="true">
+            <arg name="value" type="bool" />
+        </method>
+        <method name="outsetFrameBounds" virtual="true" abstract="true">
+            <arg name="bounds" type="grRectangle" reftype="constref" />
+            <return type="grRectangle" />
+        </method>
+        <method name="get_frame">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="startDragging" virtual="true" abstract="true">
+            <arg name="ctx" type="grUiObjectDragContext" reftype="strong" />
+        </method>
+        <method name="emitMouseMoveEvent" virtual="true" abstract="true">
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+        </method>
+        <method name="emitMouseLeaveEvent" virtual="true" abstract="true" />
+        <method name="emitObjectDropEvent" virtual="true" abstract="true">
+            <arg name="ctx" type="grUiDragObject" reftype="strong" />
+        </method>
+        <method name="update" virtual="true" />
+        <method name="updateNativeBorderInsets" virtual="true">
+            <arg name="ctx" type="grUiBorderNative" reftype="weak" />
+            <return type="bool" />
+        </method>
+        <method name="nativeWidgetPresent" virtual="true" />
+        <method name="get_scaleFactor" virtual="true">
+            <return type="int" />
+        </method>
+        <method name="usesExternalWindowManager" virtual="true">
+            <return type="bool" />
+        </method>
+    </class>
+    
+    <struct name="grUiDrawEffectData">
+        <field name="effectId" type="uint32_t" />
+        <field name="effectParam1" type="float" />
+        <field name="effectParam2" type="float" />
+    </struct>
+
+    <class name="grUiRenderer" virtual="true" abstract="true">
+        <constructor />
+
+        <method name="set_renderWidget">
+            <arg name="renderWidget" type="grUiWidget" reftype="weak" />
+        </method>
+        <method name="get_renderWidget" const="true">
+            <return type="grUiWidget" reftype="weak" />
+        </method>
+        <!-- TODO: transform -->
+        <method name="drawSprite" virtual="true" abstract="true">
+            <arg name="ox" type="float" />
+            <arg name="oy" type="float" />
+            <arg name="sprite" type="grUiSprite" reftype="constref" />
+            <arg name="tint" type="uint32_t" />
+        </method>
+        <method name="drawSprite">
+            <arg name="ox" type="float" />
+            <arg name="oy" type="float" />
+            <arg name="sprite" type="grUiSprite" reftype="constref" />
+        </method>
+        <!-- drawNinePatch omitted due to obsoletion -->
+        <method name="set_uiDrawEffect" virtual="true" abstract="true">
+            <arg name="effectData" type="grUiDrawEffectData" reftype="constref" />
+            <arg name="pipelineName" type="gtl::PooledAString" default="UI" />
+        </method>
+        <method name="drawRectf">
+            <arg name="x" type="float" />
+            <arg name="y" type="float" />
+            <arg name="width" type="float" />
+            <arg name="height" type="float" />
+            <arg name="color" type="uint32_t" />
+        </method>
+        <method name="set_flipTriangles">
+            <arg name="value" type="bool" />
+        </method>
+        <method name="drawTriangle" virtual="true" abstract="true">
+            <arg name="x0" type="float" />
+            <arg name="y0" type="float" />
+            <arg name="x1" type="float" />
+            <arg name="y1" type="float" />
+            <arg name="x2" type="float" />
+            <arg name="y2" type="float" />
+            <arg name="color" type="uint32_t" />
+        </method>
+        <method name="pushClip" virtual="true" abstract="true">
+            <arg name="rc" type="grRectangle" reftype="constref" />
+        </method>
+        <method name="popClip" virtual="true" abstract="true" />
+        <method name="swapCompositionLayers" virtual="true" abstract="true" />
+        <method name="get_compositionLayerSprite" virtual="true" abstract="true">
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+            <arg name="width" type="int" />
+            <arg name="height" type="int" />
+            <return type="grUiSprite" />
+        </method>
+        <method name="get_transform">
+            <return type="gtlMath2::Matrix3x2f" reftype="ref" />
+        </method>
+    </class>
+
+    <class name="grUiSprite" disposable="true">
+        <field name="m_texture" type="grImg::Image" reftype="strong" />
+        <field name="minU" type="float" />
+        <field name="minV" type="float" />
+        <field name="maxU" type="float" />
+        <field name="maxV" type="float" />
+        <field name="dstWidth" type="float" />
+        <field name="dstHeight" type="float" />
+
+        <constructor />
+        <constructor>
+            <arg name="resource" type="gtl::PooledString" />
+        </constructor>
+        <constructor>
+            <arg name="resource" type="gtl::PooledString" />
+            <arg name="dstWidth" type="float" />
+            <arg name="dstHeight" type="float" />
+        </constructor>
+        <constructor>
+            <arg name="resource" type="gtl::PooledString" />
+            <arg name="minU" type="float" />
+            <arg name="minV" type="float" />
+            <arg name="maxU" type="float" />
+            <arg name="maxV" type="float" />
+            <arg name="dstWidth" type="float" />
+            <arg name="dstHeight" type="float" />
+        </constructor>
+        <constructor>
+            <arg name="texturePtr" type="grImg::Image" reftype="strong" />
+        </constructor>
+        <constructor>
+            <arg name="texturePtr" type="grImg::Image" reftype="strong" />
+            <arg name="dstWidth" type="float" />
+            <arg name="dstHeight" type="float" />
+        </constructor>
+        <constructor>
+            <arg name="texturePtr" type="grImg::Image" reftype="strong" />
+            <arg name="minU" type="float" />
+            <arg name="minV" type="float" />
+            <arg name="maxU" type="float" />
+            <arg name="maxV" type="float" />
+            <arg name="dstWidth" type="float" />
+            <arg name="dstHeight" type="float" />
+        </constructor>
+
+        <!-- TODO: static methods -->
+
+        <method name="withDstSize">
+            <arg name="width" type="float" />
+            <arg name="height" type="float" />
+            <return type="grUiSprite" />
+        </method>
+
+        <method name="crop">
+            <arg name="x" type="float" />
+            <arg name="y" type="float" />
+            <arg name="width" type="float" />
+            <arg name="height" type="float" />
+            <return type="grUiSprite" />
+        </method>
+    </class>
+
+    <class name="grUiTextRenderer">
+        <method name="set_enableDebugDraw" static="true">
+            <arg name="debugDraw" type="bool" />
+        </method>
+    </class>
+
+    <class name="grUiDragContext" base="gtlRcObject" abstract="true" virtual="true">
+        <field name="m_holderWindow" type="grUiWidget" reftype="weak" />
+        <field name="mouseButton" type="int" const="true" />
+
+        <constructor>
+            <arg name="holderWidget" type="grUiWidget" reftype="weak" />
+            <arg name="mouseButton" type="int" />
+        </constructor>
+
+        <method name="dragMove" virtual="true" abstract="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+            <arg name="dx" type="int" />
+            <arg name="dy" type="int" />
+        </method>
+        <method name="dragRelease" virtual="true" abstract="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+        </method>
+        <method name="showObject" virtual="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+        </method>
+        <method name="hideObject" virtual="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+        </method>
+        <method name="getCursor" virtual="true" const="true">
+            <return type="gtl::PooledAString" />
+        </method>
+    </class>
+    <class name="grUiObjectDragContext" base="grUiDragContext" virtual="true">
+        <field name="m_dragObject" type="grUiDragObject" reftype="strong" />
+            
+        <constructor>
+            <arg name="holderWidget" type="grUiWidget" reftype="weak" />
+            <arg name="mouseButton" type="int" />
+            <arg name="dragObject" type="grUiDragObject" reftype="strong" />
+        </constructor>
+
+        <method name="dragMove" virtual="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+            <arg name="x" type="int" />
+            <arg name="y" type="int" />
+            <arg name="dx" type="int" />
+            <arg name="dy" type="int" />
+        </method>
+        <method name="dragRelease" virtual="true">
+            <arg name="root" type="grUiRootWindowManager" reftype="weak" />
+        </method>
+        <method name="objectDropped" virtual="true">
+            <arg name="hasTarget" type="bool" />
+        </method>
+    </class>
+    <class name="grUiDragObject" base="gtlRcObject" virtual="true" abstract="true">
+        <enum name="Type">
+            <enumvalue name="TYPE_NONE" value="0" />
+            <enumvalue name="TYPE_SPECIAL" value="1" />
+        </enum>
+
+        <constructor />
+
+        <method name="get_type" const="true" virtual="true" abstract="true">
+            <return type="grUiDragObject::Type" />
+        </method>
+    </class>
+    
+    <class name="grUiBackgroundBase" base="gtlCloneable" virtual="true" abstract="true" />
+    
+    <class name="grUiBorderBase" base="gtlRcObject" virtual="true" abstract="true" />
+    <class name="grUiBorderNative" base="grUiBorderBase" virtual="true" />
+    
+    <class name="grUiStyleManager" singleton="true">
+        <constructor />
+
+        <method name="findStyleSheet">
+            <arg name="name" type="gtl::PooledAString" />
+            <return type="grUiGSSStyleSheet" reftype="strong" />
+        </method>
+        <method name="dropCaches" />
+    </class>
+
+    <class name="grUiMultipatchImageCache" singleton="true">
+        <constructor />
+
+        <method name="dropCaches" />
+    </class>
+
+    <class name="grUiGSSStyleSheet" base="gtlRcObject" virtual="true" />
+    <class name="grUiGSSPropVal" base="gtlRcObject" virtual="true" abstract="true">
+        <constructor />
+    </class>
+    
+    <struct name="grUiUnitSizeI" manuallyDefined="true" />
+    <struct name="grUiUnitDimension" manuallyDefined="true" />
+    <struct name="grUiMetricContext">
+        <field name="dpiScaleFactor" type="int" />
+    </struct>
+    
+    <enum name="grUiEnumContentBias" enumclass="true">
+        <enumvalue name="CONTENT_BIAS_NONE" value="0" />
+        <enumvalue name="CONTENT_BIAS_HORIZONTAL" value="1" />
+        <enumvalue name="CONTENT_BIAS_VERTICAL" value="2" />
+    </enum>
+
+    <enum name="grKeycode">
+        <enumvalue name="GR_KEY_UNKNOWN" value="0x00" />
+
+        <enumvalue name="GR_KEY_BACK" value="0x08" />
+        <enumvalue name="GR_KEY_TAB" value="0x09" />
+
+        <enumvalue name="GR_KEY_CLEAR" value="0x0C" />
+        <enumvalue name="GR_KEY_RETURN" value="0x0D" />
+
+        <enumvalue name="GR_KEY_PAUSE" value="0x13" />
+        <enumvalue name="GR_KEY_CAPITAL" value="0x14" />
+
+        <enumvalue name="GR_KEY_KANA" value="0x15" />
+
+        <enumvalue name="GR_KEY_JUNJA" value="0x17" />
+        <enumvalue name="GR_KEY_FINAL" value="0x18" />
+        <enumvalue name="GR_KEY_KANJI" value="0x19" />
+
+        <enumvalue name="GR_KEY_ESCAPE" value="0x1B" />
+
+        <enumvalue name="GR_KEY_CONVERT" value="0x1C" />
+        <enumvalue name="GR_KEY_NONCONVERT" value="0x1D" />
+        <enumvalue name="GR_KEY_ACCEPT" value="0x1E" />
+        <enumvalue name="GR_KEY_MODECHANGE" value="0x1F" />
+
+        <enumvalue name="GR_KEY_SPACE" value="0x20" />
+        <enumvalue name="GR_KEY_PRIOR" value="0x21" />
+        <enumvalue name="GR_KEY_NEXT" value="0x22" />
+        <enumvalue name="GR_KEY_END" value="0x23" />
+        <enumvalue name="GR_KEY_HOME" value="0x24" />
+        <enumvalue name="GR_KEY_LEFT" value="0x25" />
+        <enumvalue name="GR_KEY_UP" value="0x26" />
+        <enumvalue name="GR_KEY_RIGHT" value="0x27" />
+        <enumvalue name="GR_KEY_DOWN" value="0x28" />
+        <enumvalue name="GR_KEY_SELECT" value="0x29" />
+        <enumvalue name="GR_KEY_PRINT" value="0x2A" />
+        <enumvalue name="GR_KEY_EXECUTE" value="0x2B" />
+        <enumvalue name="GR_KEY_SNAPSHOT" value="0x2C" />
+        <enumvalue name="GR_KEY_INSERT" value="0x2D" />
+        <enumvalue name="GR_KEY_DELETE" value="0x2E" />
+        <enumvalue name="GR_KEY_HELP" value="0x2F" />
+
+        <enumvalue name="GR_KEY_0" value="0x30" />
+        <enumvalue name="GR_KEY_1" value="0x31" />
+        <enumvalue name="GR_KEY_2" value="0x32" />
+        <enumvalue name="GR_KEY_3" value="0x33" />
+        <enumvalue name="GR_KEY_4" value="0x34" />
+        <enumvalue name="GR_KEY_5" value="0x35" />
+        <enumvalue name="GR_KEY_6" value="0x36" />
+        <enumvalue name="GR_KEY_7" value="0x37" />
+        <enumvalue name="GR_KEY_8" value="0x38" />
+        <enumvalue name="GR_KEY_9" value="0x39" />
+
+        <enumvalue name="GR_KEY_A" value="0x41" />
+        <enumvalue name="GR_KEY_B" value="0x42" />
+        <enumvalue name="GR_KEY_C" value="0x43" />
+        <enumvalue name="GR_KEY_D" value="0x44" />
+        <enumvalue name="GR_KEY_E" value="0x45" />
+        <enumvalue name="GR_KEY_F" value="0x46" />
+        <enumvalue name="GR_KEY_G" value="0x47" />
+        <enumvalue name="GR_KEY_H" value="0x48" />
+        <enumvalue name="GR_KEY_I" value="0x49" />
+        <enumvalue name="GR_KEY_J" value="0x4A" />
+        <enumvalue name="GR_KEY_K" value="0x4B" />
+        <enumvalue name="GR_KEY_L" value="0x4C" />
+        <enumvalue name="GR_KEY_M" value="0x4D" />
+        <enumvalue name="GR_KEY_N" value="0x4E" />
+        <enumvalue name="GR_KEY_O" value="0x4F" />
+        <enumvalue name="GR_KEY_P" value="0x50" />
+        <enumvalue name="GR_KEY_Q" value="0x51" />
+        <enumvalue name="GR_KEY_R" value="0x52" />
+        <enumvalue name="GR_KEY_S" value="0x53" />
+        <enumvalue name="GR_KEY_T" value="0x54" />
+        <enumvalue name="GR_KEY_U" value="0x55" />
+        <enumvalue name="GR_KEY_V" value="0x56" />
+        <enumvalue name="GR_KEY_W" value="0x57" />
+        <enumvalue name="GR_KEY_X" value="0x58" />
+        <enumvalue name="GR_KEY_Y" value="0x59" />
+        <enumvalue name="GR_KEY_Z" value="0x5A" />
+
+        <enumvalue name="GR_KEY_LWIN" value="0x5B" />
+        <enumvalue name="GR_KEY_RWIN" value="0x5C" />
+        <enumvalue name="GR_KEY_APPS" value="0x5D" />
+
+        <enumvalue name="GR_KEY_SLEEP" value="0x5F" />
+
+        <enumvalue name="GR_KEY_NUMPAD0" value="0x60" />
+        <enumvalue name="GR_KEY_NUMPAD1" value="0x61" />
+        <enumvalue name="GR_KEY_NUMPAD2" value="0x62" />
+        <enumvalue name="GR_KEY_NUMPAD3" value="0x63" />
+        <enumvalue name="GR_KEY_NUMPAD4" value="0x64" />
+        <enumvalue name="GR_KEY_NUMPAD5" value="0x65" />
+        <enumvalue name="GR_KEY_NUMPAD6" value="0x66" />
+        <enumvalue name="GR_KEY_NUMPAD7" value="0x67" />
+        <enumvalue name="GR_KEY_NUMPAD8" value="0x68" />
+        <enumvalue name="GR_KEY_NUMPAD9" value="0x69" />
+        <enumvalue name="GR_KEY_MULTIPLY" value="0x6A" />
+        <enumvalue name="GR_KEY_ADD" value="0x6B" />
+        <enumvalue name="GR_KEY_SEPARATOR" value="0x6C" />
+        <enumvalue name="GR_KEY_SUBTRACT" value="0x6D" />
+        <enumvalue name="GR_KEY_DECIMAL" value="0x6E" />
+        <enumvalue name="GR_KEY_DIVIDE" value="0x6F" />
+        <enumvalue name="GR_KEY_F1" value="0x70" />
+        <enumvalue name="GR_KEY_F2" value="0x71" />
+        <enumvalue name="GR_KEY_F3" value="0x72" />
+        <enumvalue name="GR_KEY_F4" value="0x73" />
+        <enumvalue name="GR_KEY_F5" value="0x74" />
+        <enumvalue name="GR_KEY_F6" value="0x75" />
+        <enumvalue name="GR_KEY_F7" value="0x76" />
+        <enumvalue name="GR_KEY_F8" value="0x77" />
+        <enumvalue name="GR_KEY_F9" value="0x78" />
+        <enumvalue name="GR_KEY_F10" value="0x79" />
+        <enumvalue name="GR_KEY_F11" value="0x7A" />
+        <enumvalue name="GR_KEY_F12" value="0x7B" />
+        <enumvalue name="GR_KEY_F13" value="0x7C" />
+        <enumvalue name="GR_KEY_F14" value="0x7D" />
+        <enumvalue name="GR_KEY_F15" value="0x7E" />
+        <enumvalue name="GR_KEY_F16" value="0x7F" />
+        <enumvalue name="GR_KEY_F17" value="0x80" />
+        <enumvalue name="GR_KEY_F18" value="0x81" />
+        <enumvalue name="GR_KEY_F19" value="0x82" />
+        <enumvalue name="GR_KEY_F20" value="0x83" />
+        <enumvalue name="GR_KEY_F21" value="0x84" />
+        <enumvalue name="GR_KEY_F22" value="0x85" />
+        <enumvalue name="GR_KEY_F23" value="0x86" />
+        <enumvalue name="GR_KEY_F24" value="0x87" />
+
+        <enumvalue name="GR_KEY_NUMLOCK" value="0x90" />
+        <enumvalue name="GR_KEY_SCROLL" value="0x91" />
+
+        <enumvalue name="GR_KEY_OEM_FJ_JISHO" value="0x92" />
+        <enumvalue name="GR_KEY_OEM_FJ_MASSHOU" value="0x93" />
+        <enumvalue name="GR_KEY_OEM_FJ_TOUROKU" value="0x94" />
+        <enumvalue name="GR_KEY_OEM_FJ_LOYA" value="0x95" />
+        <enumvalue name="GR_KEY_OEM_FJ_ROYA" value="0x96" />
+
+        <enumvalue name="GR_KEY_LSHIFT" value="0xA0" />
+        <enumvalue name="GR_KEY_RSHIFT" value="0xA1" />
+        <enumvalue name="GR_KEY_LCONTROL" value="0xA2" />
+        <enumvalue name="GR_KEY_RCONTROL" value="0xA3" />
+        <enumvalue name="GR_KEY_LMENU" value="0xA4" />
+        <enumvalue name="GR_KEY_RMENU" value="0xA5" />
+
+        <enumvalue name="GR_KEY_BROWSER_BACK" value="0xA6" />
+        <enumvalue name="GR_KEY_BROWSER_FORWARD" value="0xA7" />
+        <enumvalue name="GR_KEY_BROWSER_REFRESH" value="0xA8" />
+        <enumvalue name="GR_KEY_BROWSER_STOP" value="0xA9" />
+        <enumvalue name="GR_KEY_BROWSER_SEARCH" value="0xAA" />
+        <enumvalue name="GR_KEY_BROWSER_FAVORITES" value="0xAB" />
+        <enumvalue name="GR_KEY_BROWSER_HOME" value="0xAC" />
+
+        <enumvalue name="GR_KEY_VOLUME_MUTE" value="0xAD" />
+        <enumvalue name="GR_KEY_VOLUME_DOWN" value="0xAE" />
+        <enumvalue name="GR_KEY_VOLUME_UP" value="0xAF" />
+        <enumvalue name="GR_KEY_MEDIA_NEXT_TRACK" value="0xB0" />
+        <enumvalue name="GR_KEY_MEDIA_PREV_TRACK" value="0xB1" />
+        <enumvalue name="GR_KEY_MEDIA_STOP" value="0xB2" />
+        <enumvalue name="GR_KEY_MEDIA_PLAY_PAUSE" value="0xB3" />
+        <enumvalue name="GR_KEY_LAUNCH_MAIL" value="0xB4" />
+        <enumvalue name="GR_KEY_LAUNCH_MEDIA_SELECT" value="0xB5" />
+        <enumvalue name="GR_KEY_LAUNCH_APP1" value="0xB6" />
+        <enumvalue name="GR_KEY_LAUNCH_APP2" value="0xB7" />
+
+        <enumvalue name="GR_KEY_OEM_1" value="0xBA" />
+        <enumvalue name="GR_KEY_OEM_PLUS" value="0xBB" />
+        <enumvalue name="GR_KEY_OEM_COMMA" value="0xBC" />
+        <enumvalue name="GR_KEY_OEM_MINUS" value="0xBD" />
+        <enumvalue name="GR_KEY_OEM_PERIOD" value="0xBE" />
+        <enumvalue name="GR_KEY_OEM_2" value="0xBF" />
+        <enumvalue name="GR_KEY_OEM_3" value="0xC0" />
+        <enumvalue name="GR_KEY_OEM_4" value="0xDB" />
+        <enumvalue name="GR_KEY_OEM_5" value="0xDC" />
+        <enumvalue name="GR_KEY_OEM_6" value="0xDD" />
+        <enumvalue name="GR_KEY_OEM_7" value="0xDE" />
+        <enumvalue name="GR_KEY_OEM_8" value="0xD" />
+
+        <enumvalue name="GR_KEY_OEM_AX" value="0xE1" />
+        <enumvalue name="GR_KEY_OEM_102" value="0xE2" />
+        <enumvalue name="GR_KEY_ICO_HELP" value="0xE3" />
+        <enumvalue name="GR_KEY_ICO_00" value="0xE4" />
+
+        <enumvalue name="GR_KEY_PROCESSKEY" value="0xE5" />
+
+        <enumvalue name="GR_KEY_ICO_CLEAR" value="0xE6" />
+
+        <enumvalue name="GR_KEY_PACKET" value="0xE7" />
+
+        <enumvalue name="GR_KEY_OEM_RESET" value="0xE9" />
+        <enumvalue name="GR_KEY_OEM_JUMP" value="0xEA" />
+        <enumvalue name="GR_KEY_OEM_PA1" value="0xEB" />
+        <enumvalue name="GR_KEY_OEM_PA2" value="0xEC" />
+        <enumvalue name="GR_KEY_OEM_PA3" value="0xED" />
+        <enumvalue name="GR_KEY_OEM_WSCTRL" value="0xEE" />
+        <enumvalue name="GR_KEY_OEM_CUSEL" value="0xEF" />
+        <enumvalue name="GR_KEY_OEM_ATTN" value="0xF0" />
+        <enumvalue name="GR_KEY_OEM_FINISH" value="0xF1" />
+        <enumvalue name="GR_KEY_OEM_COPY" value="0xF2" />
+        <enumvalue name="GR_KEY_OEM_AUTO" value="0xF3" />
+        <enumvalue name="GR_KEY_OEM_ENLW" value="0xF4" />
+        <enumvalue name="GR_KEY_OEM_BACKTAB" value="0xF5" />
+
+        <enumvalue name="GR_KEY_ATTN" value="0xF6" />
+        <enumvalue name="GR_KEY_CRSEL" value="0xF7" />
+        <enumvalue name="GR_KEY_EXSEL" value="0xF8" />
+        <enumvalue name="GR_KEY_EREOF" value="0xF9" />
+        <enumvalue name="GR_KEY_PLAY" value="0xFA" />
+        <enumvalue name="GR_KEY_ZOOM" value="0xFB" />
+        <enumvalue name="GR_KEY_NONAME" value="0xFC" />
+        <enumvalue name="GR_KEY_PA1" value="0xFD" />
+        <enumvalue name="GR_KEY_OEM_CLEAR" value="0xFE" />
+
+        <enumvalue name="GR_KEY_COUNT" value="0x100" />
+    </enum>
+
+    <enum name="grKeyAction">
+        <enumvalue name="GR_ACTION_KEY_RELEASED" value="0" />
+        <enumvalue name="GR_ACTION_KEY_REPEATED" value="1" />
+        <enumvalue name="GR_ACTION_KEY_PRESSED" value="2" />
+    </enum>
+
+    <enum name="grKeyMods" mode="flags">
+        <enumvalue name="GR_KEY_MOD_CTRL" value="1" />
+        <enumvalue name="GR_KEY_MOD_CTRL_OR_CMD" value="2" />
+        <enumvalue name="GR_KEY_MOD_ALT" value="4" />
+        <enumvalue name="GR_KEY_MOD_SHIFT" value="8" />
+        <enumvalue name="GR_KEY_MOD_SUPER" value="16" />
+    </enum>
+
+    <class name="grUiSpannedText">
+        <method name="clear" />
+        <method name="size" const="true">
+            <return type="uint32_t" />
+        </method>
+        <method name="empty" const="true">
+            <return type="bool" />
+        </method>
+        <method name="addTextSpan">
+            <arg name="str" type="gtl::String" reftype="constref" />
+        </method>
+        <method name="addTextSpan">
+            <arg name="str" type="gtl::String" reftype="constref" />
+            <arg name="color" type="grColor" />
+        </method>
+        <method name="addImageSpan">
+            <arg name="path" type="gtl::PooledString" reftype="constref" />
+        </method>
+    </class>
+</bindings>

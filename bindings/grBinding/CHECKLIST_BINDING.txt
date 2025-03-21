@@ -1,0 +1,11 @@
+TODO:
+✓ fix illegal casts in protected methods (might require writing more thunks for the god of thunks)
+✓ fix protected virtual method upcalls causing infinite recursion
+✓ make virtual methods actually virtual in .NET
+✓ fix FromNativePtr failing on null pointers
+✓ make FromNativePtr detect RTTI binding info
+✓ proper gc handle release
+✓ actually call OnDestroy
+✓ fix abstract class ctors
+✓ fix protected fields accessors
+- fix constref classes being copied on pass
