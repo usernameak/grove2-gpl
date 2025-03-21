@@ -1,6 +1,8 @@
 # GroveEngine 2
 The predecessor to [Winterkit](https://micodev.net/winterkit). **This repository is not going to be maintained further, as the further development will be focused on *Winterkit*.**
 
+The project in this repository is licensed under **GNU General Public License, Version 3.0**. If you need a different license, contact me at `deltacxxw at gmail dot com`.
+
 Contains a lot of stuff, but the main point of interest (and the most mature part of this project) is the **UI framework**.
 
 ## Screenshots
@@ -42,6 +44,3 @@ Do note that a lot of these issues **have been or will be resolved in Winterkit*
 
 ## Other known issues
 - 3D engine is very incomplete.
-
-## Any licenses other than GPL?
-It's possible to arrange something. Contact me at `deltacxxw at gmail dot com`
